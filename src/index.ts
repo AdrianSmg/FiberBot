@@ -1,23 +1,29 @@
 import 'dotenv/config';
 import {Client, GatewayIntentBits} from 'discord.js';
-import * as ping from './commands/ping';
+import {commandMap, loadCommands} from "./loaders/loadCommands";
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.Guilds,
-        GatewayIntentBits.GuildMembers,
-    ],
-});
+async function main() {
+    await loadCommands();
+    const client = new Client({
+        intents: [
+            GatewayIntentBits.Guilds,
+            GatewayIntentBits.GuildMembers,
+        ],
+    });
 
-client.once('ready', () => {
-    console.log('Ready!');
-});
+    client.once('ready', () => {
+        console.log('Ready!');
+    });
 
-client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isChatInputCommand()) return;
-    if (interaction.commandName == 'ping') {
-        await interaction.reply('pong');
-    }
-});
+    client.on('interactionCreate', async (interaction) => {
+        if (!interaction.isChatInputCommand()) return;
+        const command = commandMap.get(interaction.commandName);
+        if (!command) return;
+        await command.execute(interaction);
+    });
 
-client.login(process.env.TOKEN);
+    client.login(process.env.TOKEN);
+
+}
+
+main().catch(console.error);
