@@ -47,7 +47,7 @@ export async function execute(interaction: ChatInputCommandInteraction) {
     });
 
     await interaction.reply({
-        content: "nunci enviat al canal d'anuncis.",
+        content: "Anunci enviat al canal d'anuncis.",
         ephemeral: true,
     });
 }
