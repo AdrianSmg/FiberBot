@@ -10,9 +10,12 @@ type Command = {
 export const commandMap = new Map<string, Command>();
 
 export async function loadCommands() {
+
     const commandsPath = path.join(__dirname, '..', 'commands');
     const files = fs.readdirSync(commandsPath);
+
     for (const file of files) {
+
         const fileDir = path.join(commandsPath, file);
         const module = await import(fileDir);
         if (!module.data || !module.execute) {
@@ -20,5 +23,7 @@ export async function loadCommands() {
             continue;
         }
         commandMap.set(module.data.name, {data: module.data, execute: module.execute});
+
     }
+
 }
